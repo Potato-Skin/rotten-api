@@ -25,18 +25,29 @@ router.post("/signup", (req, res) => {
 
   if (!username || !email || !password) {
     // WE SHOULD DISPLAY AN ERROR
+    // return res.json({ errorMessage: "SUcks to be you" });
+    return res.status(400).json({ errorMessage: "Sucks to be you" });
   }
 
   if (username.length < 4) {
     // WE SHOULD DISPLAY AN ERROR
+    return res
+      .status(400)
+      .json({ errorMessage: "Username too short", key: "username" });
   }
 
   if (email.length < 8) {
     // we should display an error
+    return res
+      .status(400)
+      .json({ errorMessage: "Email too short", key: "email" });
   }
 
   if (password.length < 8) {
     // we should display an error
+    return res
+      .status(400)
+      .json({ errorMessage: "Password too weak", key: "password" });
   }
 
   // Checking if has minimum amount of characters
@@ -48,6 +59,9 @@ router.post("/signup", (req, res) => {
       // Check if user already exists with either username or email
       if (singleUser) {
         // WE SHOULD DISPLAY AN ERROR
+        return res
+          .status(400)
+          .json({ errorMessage: "Sucks... But it can't be you" });
       }
 
       const salt = bcrypt.genSaltSync();
@@ -67,14 +81,14 @@ router.post("/signup", (req, res) => {
             });
           })
           .catch((err) => {
-            res.status(500).json({ message: err.message });
+            res.status(500).json({ errorMessage: err.message });
           });
       });
     })
     .catch((err) => {
       console.log("err:", err);
       // DISPLAY ANOTHER KIND OF ERROR
-      res.status(500).json({ message: err.message });
+      res.status(500).json({ errorMessage: err.message });
     });
   // Hash a password
   // IF SO: ERROR
