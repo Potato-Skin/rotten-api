@@ -3,6 +3,7 @@ const Session = require("../models/Session.model");
 module.exports = (req, res, next) => {
   const accessToken = req.headers.authorization;
   if (!accessToken || accessToken === "null") {
+    console.log("OPPSIE DAISY?");
     // return an error. In the backend did res.redirect
     return res.status(401).json({ errorMessage: "Go Home. You're Drunk" });
   }
@@ -10,6 +11,7 @@ module.exports = (req, res, next) => {
     .populate("user")
     .then((theSession) => {
       if (!theSession) {
+        console.log("IS THER NO SESSION?");
         return res.status(401).json({ errorMessage: "Go Home. You're Drunk" });
       }
       // you are here 👈

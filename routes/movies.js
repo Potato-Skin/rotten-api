@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const isLoggedIn = require("../middleware/isLoggedIn");
 const Movie = require("../models/Movie.model");
+const Review = require("../models/Review.model");
 
 const router = Router();
 
@@ -11,9 +12,11 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:allTheSingleMovies", (req, res) => {
-  Movie.findById(req.params.allTheSingleMovies).then((movie) => {
-    res.json(movie);
-  });
+  Movie.findById(req.params.allTheSingleMovies)
+    .populate("reviews")
+    .then((movie) => {
+      res.json(movie);
+    });
 });
 
 router.post("/add", isLoggedIn, (req, res) => {
@@ -50,6 +53,31 @@ router.post("/add", isLoggedIn, (req, res) => {
       console.log(err);
       res.json(500).json({ errorMessage: err.message });
     });
+});
+
+router.post("/:id/add-review", isLoggedIn, (req, res) => {
+  const { title, body } = req.body;
+  if (!title || !body) {
+    return res.status(400).json({ errMessage: "Not good enough" });
+  }
+
+  Review.create({
+    title,
+    body,
+    user: req.user._id,
+  }).then((newReview) => {
+    Movie.findByIdAndUpdate(
+      req.params.id,
+      {
+        $addToSet: { reviews: newReview._id },
+      },
+      { new: true }
+    )
+      .populate("reviews")
+      .then((updatedMovie) => {
+        res.json({ message: "Cool beans, brah", movie: updatedMovie });
+      });
+  });
 });
 
 module.exports = router;
