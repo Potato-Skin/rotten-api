@@ -1,3 +1,4 @@
+require("dotenv/config");
 const mongoose = require("mongoose");
 
 const Movie = require("../models/Movie.model");
@@ -32,11 +33,13 @@ const moviesArr = [
   },
 ];
 
-mongoose.connect("mongodb://localhost/rotten-api").then(() => {
-  console.log("CONNECTED WITH STUFF");
-  Movie.insertMany(moviesArr).then(() => {
-    console.log("ADDED STUFF");
-    mongoose.disconnect();
-    console.log("DISCONNECTED STUFF");
+mongoose
+  .connect(process.env.MONGODB_URI || "mongodb://localhost/rotten-api")
+  .then(() => {
+    console.log("CONNECTED WITH STUFF");
+    Movie.insertMany(moviesArr).then(() => {
+      console.log("ADDED STUFF");
+      mongoose.disconnect();
+      console.log("DISCONNECTED STUFF");
+    });
   });
-});

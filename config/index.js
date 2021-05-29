@@ -11,12 +11,14 @@ const cookieParser = require("cookie-parser");
 
 const cors = require("cors");
 
+const proccess = process;
+
 // Middleware configuration
 module.exports = (app) => {
   // In development `environment the app logs
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: proccess.env.ORIGIN || "http://localhost:3000",
     })
   );
 
