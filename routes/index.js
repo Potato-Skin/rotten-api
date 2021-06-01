@@ -17,4 +17,10 @@ const profileRouter = require("./profile");
 
 router.use("/profile", profileRouter);
 
+const userRouter = require("./users");
+
+router.use("/users", userRouter);
+
+router.use("/conversations", require("./conversations"));
+
 module.exports = router;
